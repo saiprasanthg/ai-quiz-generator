@@ -2,7 +2,25 @@
 
 Full-stack app that generates dynamic quizzes from a user topic, evaluates responses, and provides real-time performance feedback.
 
-## Stack
+## Screenshots
+
+### Home (topic input)
+
+![Home screen](./assets/home.png)
+
+### Loading after clicking Generate
+
+![Loading screen](./assets/loading.png)
+
+### Quiz session
+
+![Quiz session](./assets/quiz.png)
+
+### Final performance report
+
+![Results screen](./assets/results.png)
+
+## Tech Stack
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
@@ -12,6 +30,7 @@ Full-stack app that generates dynamic quizzes from a user topic, evaluates respo
 
 - `client/` React web app
 - `server/` Express API for quiz generation/evaluation/feedback
+- `assets/` README screenshots
 
 ## Prerequisites
 
@@ -82,6 +101,23 @@ From project root, you can also use:
 npm run dev:server
 npm run dev:client
 ```
+
+## What Happens After You Click "Generate Quiz"
+
+1. The frontend trims and validates the topic input.
+2. If topic is empty, it shows `Enter a topic to generate a quiz.` and stops.
+3. If valid, UI switches to the loading screen and starts a 45-second timeout guard.
+4. Frontend sends `POST /api/quiz/generate` with:
+   - `topic`
+   - `difficulty`
+   - `numQuestions`
+5. Backend validates the payload and normalizes difficulty/question count.
+6. Backend calls OpenAI to generate quiz JSON with title + multiple-choice questions.
+7. Backend normalizes quiz output and applies safe fallbacks if needed.
+8. Backend stores the quiz in server memory with a new `quizId`.
+9. Backend returns a quiz preview payload (questions/options for the session).
+10. Frontend saves that quiz in state and navigates to `/quiz/:quizId`.
+11. If request fails or times out, frontend shows a clear error and returns control to the user.
 
 ## API Endpoints
 
